@@ -1,11 +1,16 @@
 pkgname=perl
 pkgver=5.42.0
-pkgrel=1
+pkgrel=2
 pkgdesc="A highly capable, feature-rich programming language"
 arch=('x86_64')
 url="https://www.perl.org/"
 license=('GPL' 'PerlArtistic')
-depends=('glibc' 'libxcrypt')
+depends=(
+    'gdbm'
+    'glibc'
+    'libxcrypt'
+)
+makedepends=('patchutils')
 options=('makeflags' '!purge' 'emptydirs')
 source=(https://www.cpan.org/src/5.0/${pkgname}-${pkgver}.tar.xz)
 sha256sums=(73cf6cc1ea2b2b1c110a18c14bbbc73a362073003893ffcedc26d22ebdbdd0c3)
@@ -15,6 +20,7 @@ build() {
 
     export BUILD_ZLIB=False
     export BUILD_BZIP2=0
+    export TZ=UTC
 
     sh Configure -des                                          \
         -Dprefix=/usr                                          \
@@ -37,9 +43,8 @@ build() {
 
     make
 
-    unset BUILD_ZLIB BUILD_BZIP2
+    unset BUILD_ZLIB BUILD_BZIP2 TZ
 }
-
 
 package() {
     cd ${pkgname}-${pkgver}
